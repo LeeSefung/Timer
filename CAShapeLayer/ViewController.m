@@ -33,6 +33,10 @@
 //计时器
 @property (nonatomic, strong) NSTimer *timer;
 
+//是否第一次运行
+@property (nonatomic, assign) BOOL isStart;
+//获取当前时间计数值
+- (int)timerCount;
 @end
 
 @implementation ViewController
@@ -41,6 +45,7 @@
     
     [super viewDidLoad];
     
+    self.isStart = YES;
     self.secondTime = ({
         
         LSCircleProgressView *progress = [[LSCircleProgressView alloc] initWithFrame:CGRectMake(7.5, 40, 340, 340)];
@@ -127,10 +132,10 @@
         label.font = [UIFont systemFontOfSize:150];
         label;
     });
-//    [self.view addSubview:self.label];
+    //    [self.view addSubview:self.label];
     
     self.timeLabel = ({
-    
+        
         UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 115)];
         label.textColor = [UIColor grayColor];
         label.text = @"00:00:00";
@@ -174,6 +179,10 @@
 - (void)timeUpdate {
     
     static int i = 1;
+    if (self.isStart) {
+        i = [self timerCount];
+        self.isStart = NO;
+    }
     self.secondProgress.progress = i % 60 / 60.0;
     self.minuteProgress.progress = i / 60 % 60 / 60.0;
     self.hourProgress.progress = i / 3600 % 12 / 12.0;
@@ -214,6 +223,18 @@
     }
     
     self.timeLabel.text = [NSString stringWithFormat:@"%@:%@:%@",hourString, minuteString, secondString];
+}
+
+- (int)timerCount {
+    
+    NSString* date;
+    
+    NSDateFormatter * formatter = [[NSDateFormatter alloc ] init];
+    //    [formatter setDateFormat:@"YYYY.MM.dd.hh.mm.ss"];
+    [formatter setDateFormat:@"YYYY-MM-dd hh:mm:ss"];
+    date = [formatter stringFromDate:[NSDate date]];
+    int i = [[date substringWithRange:NSMakeRange(11, 2)] intValue]*3600 + [[date substringWithRange:NSMakeRange(14, 2)] intValue]*60 + [[date substringWithRange:NSMakeRange(17, 2)] intValue]*1;
+    return i;
 }
 
 @end
