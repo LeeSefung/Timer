@@ -35,8 +35,10 @@
 
 //是否第一次运行
 @property (nonatomic, assign) BOOL isStart;
+
 //获取当前时间计数值
 - (int)timerCount;
+
 @end
 
 @implementation ViewController
